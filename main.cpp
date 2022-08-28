@@ -22,7 +22,7 @@ public:
 
         for(int i = 0; i < nums.size(); i++) {
             complement = target - nums[i];
-            if(map.find(complement) != map.end() && map[complement] != i)
+            if(map.find(complement) != map.end())
                 return {map[complement], i};
             map.insert({nums[i], i});
         }
