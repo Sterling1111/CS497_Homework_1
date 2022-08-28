@@ -71,12 +71,7 @@ public:
         if(nums1.size() > nums2.size())
             return findMedianSortedArrays(nums2, nums1);
 
-        vector<int> v(10);
-
-        v[0] = nums1.size();
-        v[1] = nums2.size();
-        v[2] = 0;
-        v[3] = v[0];
+        vector<int> v = {(int)nums1.size(), (int)nums2.size(), 0, (int) nums1.size(), 0, 0, 0, 0, 0, 0};
         return medianHelper(nums1, nums2, v);
     }
 
