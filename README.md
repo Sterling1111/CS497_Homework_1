@@ -26,7 +26,7 @@ the right of array a >= the max element in the left of array b. If these two
 properties are true then we can immediately compute the median. The partitions
 are adjusted by removing elements from the smaller array by comparing the max
 element in the right party of array a to the minimum element in the right part 
-of array b. Since the algorithm performs a binary search on the smaller array it it
+of array b. Since the algorithm performs a binary search on the smaller array it is
 O(log(min{m, n})) = O(log(m + n)). Space complexity is O(1) since constant space is used. 
 
 ## Remove Nth Node From End of List

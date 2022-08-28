@@ -68,40 +68,35 @@ public:
     }
 
     double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
-        if(nums1.size() > nums2.size()) {
+        if(nums1.size() > nums2.size())
             return findMedianSortedArrays(nums2, nums1);
+
+        vector<int> v(10);
+
+        v[0] = nums1.size();
+        v[1] = nums2.size();
+        v[2] = 0;
+        v[3] = v[0];
+        return medianHelper(nums1, nums2, v);
+    }
+
+    double medianHelper(vector<int>& nums1, vector<int>& nums2, vector<int>& v) {
+        if(v[0] > v[1]) return -1;
+        v[4] = (v[2] + v[3]) / 2;
+        v[5] = (v[0] + v[1] + 1) / 2 - v[4];
+
+        v[6] = v[4] == 0 ? INT_MIN : nums1[v[4] - 1];
+        v[7] = v[4] == v[0] ? INT_MAX : nums1[v[4]];
+        v[8] = v[5] == 0 ? INT_MIN : nums2[v[5] - 1];
+        v[9] = v[5] == v[1] ? INT_MAX : nums2[v[5]];
+
+        if(v[6] <= v[9] && v[7] >= v[8]) {
+            if((v[0] + v[1]) & 0x1) return max(v[6], v[8]);
+            else return (max(v[6], v[8]) + (min(v[7], v[9]))) / 2.0;
         }
-
-        int m = nums1.size();
-        int n = nums2.size();
-
-        int start = 0;
-        int end = m;
-
-        while(start <= end) {
-            int part1 = (start + end) / 2;
-            int part2 = (m + n + 1) / 2 - part1;
-
-            int maxLeftPart1 = part1 == 0 ? INT_MIN : nums1[part1 - 1];
-            int minRightPart1 = part1 == m ? INT_MAX : nums1[part1];
-            int maxLeftPart2 = part2 == 0 ? INT_MIN : nums2[part2 - 1];
-            int minRightPart2 = part2 == n ? INT_MAX : nums2[part2];
-
-            if(maxLeftPart1 <= minRightPart2 && minRightPart1 >= maxLeftPart2) {
-                //if combined elements are odd parity
-                if((m + n) & 0x1) {
-                    return max(maxLeftPart1, maxLeftPart2);
-                } else {
-                    return (max(maxLeftPart1, maxLeftPart2) + (min(minRightPart1, minRightPart2))) / 2.0;
-                }
-            }
-            else if(maxLeftPart1 > minRightPart2) {
-                end = part1 - 1;
-            } else {
-                start = part1 + 1;
-            }
-        }
-        return -1;
+        else if(v[6] > v[9]) v[3] = v[4] - 1;
+        else v[2] = v[4] + 1;
+        return medianHelper(nums1, nums2, v);
     }
 
     ListNode* removeNthFromEnd(ListNode* head, int n) {
