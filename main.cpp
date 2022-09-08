@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <deque>
 #include <unordered_map>
 #include <algorithm>
 
@@ -14,8 +15,104 @@ struct ListNode {
     ListNode(int x, ListNode *next) : val(x), next(next) {}
 };
 
+struct Bucket{
+    int min{numeric_limits<int>::min()};
+    int max{numeric_limits<int>::max()};
+    bool empty{true};
+};
+
 class Solution {
 public:
+    int majorityElement(vector<int>& nums) {
+        unordered_map<int, int> mp;
+        for(int elem : nums) mp[elem]++;
+        return max_element(mp.begin(), mp.end(), [](auto p1, auto p2) {
+            return p1.second < p2.second;
+        })->first;
+    }
+
+    int findKthLargest(vector<int>& nums, int k) {
+        priority_queue<int, vector<int>, greater<>> pq;
+        for (int i = 0; i < k; ++i)
+            pq.push(nums[i]);
+        for (int i = k; i < nums.size(); ++i) {
+            if(nums[i] > pq.top()) {
+                pq.pop();
+                pq.push(nums[i]);
+            }
+        }
+        return pq.top();
+    }
+
+    int maximumGap(vector<int>& nums) {
+        if(nums.size() < 2) return 0;
+
+        auto[minElem, maxElem] = minmax_element(nums.begin(), nums.end());
+
+        int minimalMaxGap = (*maxElem - *minElem) / ((int)nums.size() - 1);
+        int bucketSize = minimalMaxGap + 1;
+        int bucketNum = ((*maxElem - *minElem) / bucketSize) + 1;
+        vector<Bucket> buckets(bucketNum);
+
+        for (auto num : nums) {
+            Bucket& bucket = buckets[(num - *minElem) / bucketSize];
+            bucket.empty = false;
+            bucket.max = max(bucket.max, num);
+            bucket.min = min(bucket.min, num);
+        }
+
+        int maxGap = minimalMaxGap, prevMax = *minElem;
+
+        for(const auto& bucket : buckets) {
+            if(bucket.empty) continue;
+            maxGap = max(maxGap, bucket.min - prevMax);
+            prevMax = bucket.max;
+        }
+        return maxGap;
+    }
+
+    string removeDuplicateLetters(string s) {
+        if(s.empty()) return s;
+        int count[26] = {};
+        int index{};
+        for(auto elem : s) count[elem - 'a']++;
+        for (int i = 0; i < s.size(); ++i) {
+            if(s[i] < s[index]) index = i;
+            if(!(--count[s[i] - 'a'])) break;
+        }
+        char letter{s[index]};
+        s = s.substr(index + 1);
+        s.erase(remove(s.begin(), s.end(), letter), s.end());
+        return letter + removeDuplicateLetters(s);
+    }
+
+    int shortestSubarray(vector<int>& nums, int k) {
+        int size = (int)nums.size();
+        int minLength{(int)nums.size() + 1};
+        long long sum{};
+        typedef tuple<long long, long long, bool> dqNode;
+        deque<dqNode> dq;
+
+        for (int i = 0; i < size; ++i) {
+            sum += nums[i];
+            if(sum >= k)
+                minLength = min(minLength, i + 1);
+
+            dqNode is = {0, 0, false};
+            while(!dq.empty() && sum - get<1>(dq.front()) >= k) {
+                is = dq.front();
+                get<2>(is) = true;
+                dq.pop_front();
+            }
+            if(get<2>(is))
+                minLength = min((long long)minLength, i - get<0>(is));
+            while(!dq.empty() and sum <= get<1>(dq.back()))
+                dq.pop_back();
+            dq.emplace_back(i, sum, true);
+        }
+        return minLength == (int)nums.size() + 1 ? -1 : minLength;
+    }
+
     vector<int> twoSum(vector<int>& nums, int target) {
         unordered_map<int, int> map;
         int complement;
@@ -80,10 +177,10 @@ public:
         v[4] = (v[2] + v[3]) / 2;
         v[5] = (v[0] + v[1] + 1) / 2 - v[4];
 
-        v[6] = v[4] == 0 ? INT_MIN : nums1[v[4] - 1];
-        v[7] = v[4] == v[0] ? INT_MAX : nums1[v[4]];
-        v[8] = v[5] == 0 ? INT_MIN : nums2[v[5] - 1];
-        v[9] = v[5] == v[1] ? INT_MAX : nums2[v[5]];
+        v[6] = v[4] == 0 ? numeric_limits<int>::min() : nums1[v[4] - 1];
+        v[7] = v[4] == v[0] ? numeric_limits<int>::max() : nums1[v[4]];
+        v[8] = v[5] == 0 ? numeric_limits<int>::min() : nums2[v[5] - 1];
+        v[9] = v[5] == v[1] ? numeric_limits<int>::max() : nums2[v[5]];
 
         if(v[6] <= v[9] && v[7] >= v[8]) {
             if((v[0] + v[1]) & 0x1) return max(v[6], v[8]);
@@ -135,6 +232,8 @@ public:
 
 
 int main() {
+    Solution sol;
+    std::cout << sol.removeDuplicateLetters("leetcode") << std::endl;
     std::cout << "Hello, world" << std::endl;
     return 0;
 }

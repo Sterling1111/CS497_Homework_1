@@ -46,3 +46,39 @@ is O(n) and so overall time complexity is O(n). Space complexity to store the el
 of all the lists is O(n). Sorting is not guaranteed space complexity, but it is probably 
 not worse than O(n) and so overall space complexity is O(n). 
 
+# CS497 Homework 2
+
+## Majority Element
+The algorithm puts all the elements of nums into an unordered map with the key as the
+value and the value as the frequency of occurrence. Then return the value that occurs
+most frequently. Insertion is O(1) and it occurs n times. Searching all elements for
+the max is O(n) and so time complexity is O(n). Space is O(n) for the map of n elements. 
+
+## Kth Largest Element in an Array
+The algorithm puts all elements of nums into a priority queue with min element at top and
+size of k. Then the top element is returned. It is O(log n) for inserting into a heap and 
+insertion occurs O(n) times with a heap of size k. So time complexity is O(n log k). Space
+complexity is O(k) for the priority queue. 
+
+## Maximum gap
+The algorithm computes the minimum possible max gap and then puts all elements into buckets such
+that none of the elements in the same bucket are farther away than the min possible max gap. So if
+the answer is larget than that it must occur between the max and min of adjacent non-empty buckets.
+There are n -1 buckets so space complexity is O(n). Time complexity is O(n) for placing n elements
+into buckets and for iterating through the buckets. 
+
+## Remove Duplicate Letters
+The algorithm finds the left-most element that cannot be deleted either because it is the only
+of its kind remaining or it is less than all the other elements in the string. Then it removes
+all elements to the left of it and all of its kind to the right. Then it calls itself on the right 
+remaining part of the string. There are max of 26 function calls, and they do n work and allocate n 
+memory each time so the time complexity is O(n) and the space complexity is O(n).
+
+## Shortest Sub-Array with Sum at Least K
+The algorithm uses the sliding window technique except we need to make sure that eliminating 
+previous elements always results in a decrease. So we use a deque where each element is a region
+in the array where there is increase. If we encounter a negative element we remove elements from
+the deque from the end until we pay off the debt. Then the sliding window technique will work. The time
+is O(n) as we iterate through the elements once and only put 1 element in the deque and if the inner
+loops ever run they remove one element. The space complexity is O(n) for the dequeue. 
+
