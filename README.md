@@ -82,3 +82,60 @@ the deque from the end until we pay off the debt. Then the sliding window techni
 is O(n) as we iterate through the elements once and only put 1 element in the deque and if the inner
 loops ever run they remove one element. The space complexity is O(n) for the dequeue. 
 
+# CS497 Homework 3
+
+## Convert Sorted List to Binary Search Tree
+The algorithm first converts the linked list to a vector. Then calls a function which
+recursively calculates the mid-element of a given subsequence of the array. Everything
+to the left of mid will be less than mid and everything to the right of mid with be greater than mid. 
+Create a new node with the mid-element as the value and set the left and right pointers to the recursive
+call of the function with appropriately adjusted start and end pointers. Then return the node. The function
+returns nullptr if start is greater than end. The tree will be balanced because we divide each subsequence
+roughly in half(never differing by more than 1 element) each time so each node will be balanced. Time 
+complexity to convert list to array is O(n). There is constant work done in each recursive call and there is
+one invocation of recursive function for each node with n nodes so O(n). So overall time complexity is O(n). 
+Space complexity is O(n) for storing linked list in array with constant space and O(log n) recursive stack height(balanced).
+So overall space complexity is O(n).
+
+# Construct Binary Tree from Preorder and Inorder Traversal 
+First all elements are inserted into an unordered map with key as value and value as index.
+Then we call a recursive function that takes the preorder vector with an index, and start and 
+end pointers for a subsequence of the inorder array. If start is greater than end we return nullptr.
+Then we get the node we will create from the preorder array from left to right with index. We need
+to then establish the correct left and right pointers for this node. Since inorder traversal results
+in left elements - root - right elements. we know that left of this node will be from start to
+root index - 1. We get this index from the unordered map of value. We know that the right of this
+node will be elements from root index + 1 to end with the first index gotten in the same way. Then we 
+return root. Time complexity is O(n) for putting all elements in the map. There will be about n recursive
+calls for the n nodes and each call does constant work since hashmap lookup is O(1). So overall time
+complexity will be O(n). Space complexity is O(n) for hashmap creation and O(n) for max recursive depth as
+the tree may be ordered. So overall space complexity is O(n).
+
+# Binary Tree Maximum Path Sum 
+The problem is very simple if you think about the details. From a high level you can include
+some parent node with some path of left and right children and nothing above, or you can include 
+the parent node with either the left child or right child with some other path above the root node. 
+For the details set a global variable maxSum as smallest possible integer. Call recursive function
+maxPathSumRec with root. If nullptr return 0 as nothing can be added. Then calculate the max you could
+get with some path from the left and max you could get with some path on the right. If they are less
+than 0 then make them 0 to say that we won't take them. Now suppose we will take this node + some path
+left and right. Then we could not proceed up, so we see if this is larger than maxSum so far. Now if
+we would proceed we would take the current node and the largest of left and right. There is constant
+work in each recursive iteration and the recursive stack is O(n) deep so time complexity is O(n). 
+Similar analysis gives O(n) space complexity. 
+
+# Find largest value in each Tree row
+Simply put the root into a queue. Then keep track of the current size of the queue. As you
+pop elements up to that size compare for the max element and push new elements into the back
+of the queue if they are non-null. At the end of each inner iteration push the max of that
+level into the result vector. Time complexity is O(n) for constant time work to process n elements
+of the tree. The maximum number of elements in a full tree at the last row is n/2 so space complexity
+is O(n).
+
+# Balance a Binary Search Tree 
+The algorithm first inserts the elements of the tree into a vector with an inorder traversal.
+This will result in a vector that is sorted in ascending order. Then simply construct the tree in
+the same manner as in [Convert Sorted List to Binary Search Tree](#convert-sorted-list-to-binary-search-tree).
+Time complexity is O(n) for inorder traversal and O(n) to construct the tree. So overall is O(n).
+Space complexity is O(n) for the construction of the vector and O(log n) for the max recursion depth(balanced tree).
+So overall is O(n).

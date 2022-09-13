@@ -15,6 +15,15 @@ struct ListNode {
     ListNode(int x, ListNode *next) : val(x), next(next) {}
 };
 
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr){}
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+};
+
 struct Bucket{
     int min{numeric_limits<int>::min()};
     int max{numeric_limits<int>::max()};
@@ -23,6 +32,114 @@ struct Bucket{
 
 class Solution {
 public:
+    vector<int> v1;
+
+    void convertListToVector(ListNode* head) {
+        while(head) {
+            v1.push_back(head->val);
+            head = head->next;
+        }
+    }
+
+    TreeNode* sortedListToBSTRec(int start, int end) {
+        if(start > end) return nullptr;
+
+        int mid = (start + end) / 2;
+        TreeNode* node = new TreeNode(v1[mid]);
+
+        if(start == end) return node;
+
+        node->left = sortedListToBSTRec(start, mid - 1);
+        node->right = sortedListToBSTRec(mid + 1, end);
+        return node;
+    }
+
+    TreeNode* sortedListToBST(ListNode* head) {
+        convertListToVector(head);
+        return sortedListToBSTRec(0, (int)v1.size() - 1);
+    }
+
+    unordered_map<int, int> inorderMap;
+
+    TreeNode* buildTreeRec(vector<int>& preorder, int& index, int start, int end) {
+        if(start > end) return nullptr;
+        int val = preorder[index++];
+
+        TreeNode* root = new TreeNode(val);
+
+        root->left = buildTreeRec(preorder, index, start, inorderMap[val] - 1);
+        root->right = buildTreeRec(preorder, index, inorderMap[val] + 1, end);
+        return root;
+    }
+
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        int preorderIndex{0};
+        for(int i = 0; i < inorder.size(); i++) {
+            inorderMap[inorder[i]] = i;
+        }
+        return buildTreeRec(preorder, preorderIndex, 0, (int)inorder.size() - 1);
+    }
+
+    int maxSum = numeric_limits<int>::min();
+
+    int maxPathSumRec(TreeNode* root) {
+        if(!root) return 0;
+
+        int maxLeft = max(0, maxPathSumRec(root->left));
+        int maxRight = max(0, maxPathSumRec(root->right));
+
+        maxSum = max(root->val + maxLeft + maxRight, maxSum);
+        return max(root->val + maxLeft, root->val + maxRight);
+    }
+
+    int maxPathSum(TreeNode* root) {
+        maxPathSumRec(root);
+        return maxSum;
+    }
+
+    vector<int> largestValues(TreeNode* root) {
+        if(!root) return {};
+        vector<int> largest;
+        queue<TreeNode*> level;
+        level.push(root);
+
+        while(!level.empty()) {
+            auto size{level.size()};
+            int max = numeric_limits<int>::min();
+            while(size--) {
+                TreeNode* node{level.front()};
+                max = std::max(max, node->val);
+                if(node->left) level.push(node->left);
+                if(node->right) level.push(node->right);
+                level.pop();
+            }
+            largest.push_back(max);
+        }
+        return largest;
+    }
+
+    vector<TreeNode*> v2;
+
+    void fillVectorInorder(TreeNode* root) {
+        if(!root) return;
+        fillVectorInorder(root->left);
+        v2.push_back(root);
+        fillVectorInorder(root->right);
+    }
+
+    TreeNode* balanceBSTRec(int start, int end) {
+        if(start > end) return nullptr;
+        int mid = (start + end) / 2;
+        v2[mid]->left = balanceBSTRec(start, mid - 1);
+        v2[mid]->right = balanceBSTRec(mid + 1, end);
+        return v2[mid];
+    }
+
+    TreeNode* balanceBST(TreeNode* root) {
+        fillVectorInorder(root);
+        return balanceBSTRec(0, (int)v2.size() - 1);
+    }
+
     int majorityElement(vector<int>& nums) {
         unordered_map<int, int> mp;
         for(int elem : nums) mp[elem]++;
