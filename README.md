@@ -97,7 +97,7 @@ one invocation of recursive function for each node with n nodes so O(n). So over
 Space complexity is O(n) for storing linked list in array with constant space and O(log n) recursive stack height(balanced).
 So overall space complexity is O(n).
 
-# Construct Binary Tree from Preorder and Inorder Traversal 
+## Construct Binary Tree from Preorder and Inorder Traversal 
 First all elements are inserted into an unordered map with key as value and value as index.
 Then we call a recursive function that takes the preorder vector with an index, and start and 
 end pointers for a subsequence of the inorder array. If start is greater than end we return nullptr.
@@ -111,7 +111,7 @@ calls for the n nodes and each call does constant work since hashmap lookup is O
 complexity will be O(n). Space complexity is O(n) for hashmap creation and O(n) for max recursive depth as
 the tree may be ordered. So overall space complexity is O(n).
 
-# Binary Tree Maximum Path Sum 
+## Binary Tree Maximum Path Sum 
 The problem is very simple if you think about the details. From a high level you can include
 some parent node with some path of left and right children and nothing above, or you can include 
 the parent node with either the left child or right child with some other path above the root node. 
@@ -124,7 +124,7 @@ we would proceed we would take the current node and the largest of left and righ
 work in each recursive iteration and the recursive stack is O(n) deep so time complexity is O(n). 
 Similar analysis gives O(n) space complexity. 
 
-# Find largest value in each Tree row
+## Find largest value in each Tree row
 Simply put the root into a queue. Then keep track of the current size of the queue. As you
 pop elements up to that size compare for the max element and push new elements into the back
 of the queue if they are non-null. At the end of each inner iteration push the max of that
@@ -132,7 +132,7 @@ level into the result vector. Time complexity is O(n) for constant time work to 
 of the tree. The maximum number of elements in a full tree at the last row is n/2 so space complexity
 is O(n).
 
-# Balance a Binary Search Tree 
+## Balance a Binary Search Tree 
 The algorithm first inserts the elements of the tree into a vector with an inorder traversal.
 This will result in a vector that is sorted in ascending order. Then simply construct the tree in
 the same manner as in [Convert Sorted List to Binary Search Tree](#convert-sorted-list-to-binary-search-tree).
