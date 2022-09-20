@@ -139,3 +139,44 @@ the same manner as in [Convert Sorted List to Binary Search Tree](#convert-sorte
 Time complexity is O(n) for inorder traversal and O(n) to construct the tree. So overall is O(n).
 Space complexity is O(n) for the construction of the vector and O(log n) for the max recursion depth(balanced tree).
 So overall is O(n).
+
+# CS497 Homework 4
+
+## Top K Frequent Elements
+The algorithm puts all elements in an unordered map with the element
+as the key and frequency as the value. Then the elements of the
+map are inserted into a min heap with the sorting criteria as the
+frequency. They are only inserted if there is less than k elements in
+the heap or if the top element which is the min is smaller than the
+element at hand. Then all the elements of the heap are added to the vector
+and returned. Time complexity is O(n log k) and space complexity is O(n).
+
+## Find K Closest Elements
+The algorithm first finds the lower bound of where x could be inserted
+without changing the order of the vector. If the lower bound is the start
+of the array then return the first k elements. If it is the end then return
+the end then return the last k elements. Otherwise, start adjusting left and
+right iterators comparing the value of the iterators each time to see which
+one to adjust until one of them goes of the cliff, or we have k elements. Then
+return the appropriate elements according to the left and right iterators. The
+time complexity is O((log n) + k). Space complexity is O(k).
+
+## K Largest Elements of a Max Heap
+The performs k iteration of insertion and removal from a priority queue. Each element 
+in the queue will contain an index and a value at that index. Start 
+with the first element on the heap which will always be the largest. Now
+remove the top of the queue which is the largest and push the children of
+the largest onto the queue. Then add the element just popped to the result. 
+Every iteration adds 2 to the queue and removes 1 so 1 is added k iterations for a space
+complexity of O(k). Since there are a max of k elements in the queue the time 
+complexity is O(k log k).
+
+## [Shortest Subarray with Sum at least K ](#shortest-sub-array-with-sum-at-least-k)
+
+## Kth Smallest Prime Fraction
+The algorithm uses a struct which contains the decimal value of the fraction and the 
+index in the vector for the numerator and denominator. Fill the priority queue with the smallest
+possible fraction for each given numerator. Then for k elements remove the smallest fraction
+and push onto the queue the next smallest fraction for that given numerator. The last one
+to be popped will be the kth smallest. Time complexity will be O(max(n, k) log n). Space complexity
+will be O(n) for the queue. 

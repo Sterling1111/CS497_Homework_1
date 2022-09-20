@@ -32,6 +32,93 @@ struct Bucket{
 
 class Solution {
 public:
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        vector<int> kMostFrequent;
+        unordered_map<int, int> mp;
+        using mpType = pair<int, int>;  //first = value, second = frequency
+        auto compare = [](const mpType& p1, const mpType& p2) {return p1.second > p2.second;};
+        priority_queue<mpType, vector<mpType>, decltype(compare)> pq(compare);   //min heap
+
+        if(k == nums.size()) return nums;
+        for (auto elem : nums) mp[elem]++;
+
+        for(auto elem : mp) {
+            if(pq.size() < k) pq.push(elem);
+            else if(pq.top().second < elem.second) {
+                pq.pop();
+                pq.push(elem);
+            }
+        }
+        while(!pq.empty()) {
+            kMostFrequent.emplace_back(pq.top().first);
+            pq.pop();
+        }
+        return kMostFrequent;
+    }
+
+    vector<int> findClosestElements(vector<int>& arr, int k, int x) {
+        vector<int> v(k);
+        auto lb = lower_bound(arr.begin(), arr.end(), x);
+        if(lb == arr.begin()) copy(arr.begin(), arr.begin() + k, v.begin());
+        else if(lb == arr.end()) copy(arr.end() - k, arr.end(), v.begin());
+        else {
+            auto left = lb, right = lb;
+            int size{};
+            while(size++ < k and left > arr.begin() and right < arr.end()) {
+                if(abs(*(left-1) - x) <= abs(*right - x)) --left;
+                else ++right;
+            }
+            if(left == arr.begin()) copy(arr.begin(), arr.begin() + k, v.begin());
+            else if(right == arr.end()) copy(arr.end() - k, arr.end(), v.begin());
+            else copy(left, right, v.begin());
+        }
+        return v;
+    }
+
+    vector<int> peekTopK(const vector<int>& A, int k) {
+        auto size = A.size();
+        if(!size) return {};
+        vector<int> result(k);
+        typedef pair<int, int> indexValuePair;
+        auto compare = [](const indexValuePair& p1, const indexValuePair& p2) {
+            return p1.second < p2.second;}; //max heap
+        priority_queue<indexValuePair, vector<indexValuePair>, decltype(compare)> pq(compare);
+
+        pq.push({0, A[0]});
+
+        for (int i = 0; i < k; ++i) {
+            auto[index, value] = pq.top();
+            pq.pop();
+            result[i] = value;
+            int leftIndex = index + index + 1, rightIndex = index + index + 2;
+            if(leftIndex < size) pq.push({leftIndex, A[leftIndex]});
+            else continue;
+            if(rightIndex < size) pq.push({rightIndex, A[rightIndex]});
+        }
+        return result;
+    }
+
+    vector<int> kthSmallestPrimeFraction(vector<int>& arr, int k) {
+        struct Fraction {
+            int n_index, d_index;
+            double value;
+            Fraction(int num_index, int den_index, double val) :
+                    n_index{num_index}, d_index{den_index}, value{val}{}
+            bool operator<(const Fraction& f) const {return value > f.value;}
+        };
+        priority_queue<Fraction> pq;
+        auto size = arr.size();
+
+        for (int i = 0; i < size-1; ++i) pq.push(Fraction(i, size-1, double(arr[i]) / arr[size-1]));
+
+        for (int i = 0; i < k-1; ++i) {
+            Fraction f = pq.top();
+            pq.pop();
+            pq.push(Fraction(f.n_index, f.d_index-1, double(arr[f.n_index]) / arr[f.d_index-1]));
+        }
+        return {arr[pq.top().n_index], arr[pq.top().d_index]};
+    }
+
     vector<int> v1;
 
     void convertListToVector(ListNode* head) {
@@ -350,7 +437,8 @@ public:
 
 int main() {
     Solution sol;
-    std::cout << sol.removeDuplicateLetters("leetcode") << std::endl;
-    std::cout << "Hello, world" << std::endl;
+    vector<int> v = {1, 13, 17, 59};
+    sol.kthSmallestPrimeFraction(v, 6);
+
     return 0;
 }
