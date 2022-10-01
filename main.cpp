@@ -3,7 +3,9 @@
 #include <queue>
 #include <deque>
 #include <unordered_map>
+#include <unordered_set>
 #include <algorithm>
+#include <set>
 
 using namespace std;
 
@@ -32,6 +34,120 @@ struct Bucket{
 
 class Solution {
 public:
+    unordered_set<string> validExpressions;
+    unsigned maxSizeAccepted{};
+
+    void rec(const string& s, int index, int leftCount, int rightCount, string& expr) {
+        if(index == s.size()) { //we have decided what to do with each elem. Keep or remove
+            if(leftCount == rightCount) { //parentheses are balanced
+                if(expr.size() >= maxSizeAccepted) {
+                    if(expr.size() > maxSizeAccepted) {
+                        validExpressions.clear();
+                        maxSizeAccepted = expr.size();
+                    }
+                    validExpressions.insert(expr);
+                }
+            }
+        } else { //we have not processed the entire string yet
+            auto curr = s.at(index);
+
+            if(curr != '(' and curr != ')') {
+                expr.push_back(curr);
+                rec(s, index+1, leftCount, rightCount, expr);
+                expr.pop_back();
+            } else {
+                //in this one we dont add no matter what it is.
+                rec(s, index+1, leftCount, rightCount, expr);
+                expr.push_back(curr);
+                if(curr == '(') {
+                    rec(s, index+1, leftCount+1, rightCount, expr);
+                }
+                else if(leftCount > rightCount) {
+                    rec(s, index+1, leftCount, rightCount+1, expr);
+                }
+                expr.pop_back();
+            }
+        }
+    }
+
+    vector<string> removeInvalidParentheses(string s) {
+        vector<string> results;
+        string expr;
+        rec(s, 0, 0, 0, expr);
+        for (const auto& elem : validExpressions) {
+            results.push_back(elem);
+        }
+        return results;
+    }
+
+    vector<int> vec1;
+
+    void inorder(TreeNode* root) {
+        if(!root) return;
+        inorder(root->left);
+        vec1.push_back(root->val);
+        inorder(root->right);
+    }
+
+    int getMinimumDifference(TreeNode* root) {
+        inorder(root);
+        int minDif = numeric_limits<int>::max();
+        for(int i = 0; i < vec1.size()-1; i++) {
+            minDif = min(minDif, vec1[i+1] - vec1[i]);
+        }
+        return minDif;
+    }
+
+    typedef int nodeType, maskType, distType;
+    typedef pair<nodeType, maskType> stateType;
+
+    int shortestPathLength(vector<vector<int>>& graph) {
+        auto size = graph.size();
+        maskType endMask = (1 << size) - 1;
+        queue<pair<distType, stateType>> q;
+        set<stateType> s;
+
+        for (int i = 0; i < size; ++i) {
+            q.push({0, {i, 1 << i}});
+            s.insert({i, 1 << i});
+        }
+        while(!q.empty()) {
+            auto curr{q.front()};
+            q.pop();
+            nodeType node{curr.second.first};
+            distType dist{curr.first};
+            maskType mask{curr.second.second};
+
+            for(nodeType n : graph[node]) {
+                maskType updatedMask = mask | (1 << n);
+                if(updatedMask == endMask) return dist+1;
+                else if(s.find({n, updatedMask}) != end(s)) continue;
+                else {
+                    q.push({dist+1, {n, updatedMask}});
+                    s.insert({n, updatedMask});
+                }
+            }
+        }
+        return 0;
+    }
+
+    bool dfs(vector<int>& result, int n, int curr) {
+        if(curr > n) return false;
+
+        result.push_back(curr);
+
+        for(int i = 0; i < 10; i++) {
+            if(!dfs(result, n, curr * 10 + i)) return result.size() < n;
+        } return result.size() < n;
+    }
+
+    vector<int> lexicalOrder(int n) {
+        vector<int> result;
+        int i {1};
+        while(dfs(result, n, i++));
+        return result;
+    }
+
     vector<int> topKFrequent(vector<int>& nums, int k) {
         vector<int> kMostFrequent;
         unordered_map<int, int> mp;

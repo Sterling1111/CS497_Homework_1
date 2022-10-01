@@ -180,3 +180,35 @@ possible fraction for each given numerator. Then for k elements remove the small
 and push onto the queue the next smallest fraction for that given numerator. The last one
 to be popped will be the kth smallest. Time complexity will be O(max(n, k) log n). Space complexity
 will be O(n) for the queue. 
+
+# CS497 Homework 5
+
+## Remove Invalid Parenthesis 
+The algorithm at each recursion considers the scenario to keep the given char or to
+remove the given char. When it gets to the end if the parentheses are valid then they are
+compared for size with what is already accepted. If they are larger, then remove everything
+else and accept them. Time complexity is O(2^n) as there is a choice for each element whether
+to keep it or not. Space complexity is O(n) as the stack is as deep as the number of chars in 
+the string.
+
+## Minimum Absolute Difference in BST
+The algorithm first inserts all elements into a vector using inorder traversal. 
+This provides a sorted order for BST. Next scan through the sorted array and compare
+all adjacent elements for the minimum elements. Both operations are O(n) and so overall 
+time complexity is O(n). Space complexity is O(n) for the vector.
+
+## Shortest Path Visiting all Nodes
+The algorithm performs bfs on all the states where the state is a combination of the node
+we are on and the nodes that have been visited. When we reach a state such that all of
+the nodes have been visited then we know that we have found the shortest path. There are 2^n
+possible masks and n nodes so the total states is n * 2^n. Also in each iteration we loop
+through n nodes and so the time complexity is O(2^n * n^2) which is really really bad. Space
+complexity is O(2^n * n) because we push onto the queue the same elements we search.
+
+## [Binary Tree Maximum Path Sum](#Binary-Tree-Maximum-Path-Sum).
+
+## Lexicographical Numbers
+The algorithm performs a dfs starting with 1. It returns if the number it is
+trying to add is greater than n or if it has added n numbers to the array. Time complexity
+is O(n) because it adds one operation per stack call and adds n numbers. Space complexity
+is O(n) for the same reason.
