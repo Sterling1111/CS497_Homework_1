@@ -550,11 +550,31 @@ public:
     }
 };
 
+template <typename T>
+void print(vector<T> v) {
+    for (T elem : v) {
+        std::cout << elem << " " << std::endl;
+    }
+    std::cout << std::endl;
+}
 
 int main() {
     Solution sol;
-    vector<int> v = {1, 13, 17, 59};
-    sol.kthSmallestPrimeFraction(v, 6);
-
+    vector<int> v1 = {};
+    vector<int> v2 = {2, 3};
+    vector<vector<int>> v3 = {{}};
+    print(sol.topKFrequent(v1, 0));
+    print(sol.findClosestElements(v1, 0, 0));
+    print(sol.peekTopK(v1, 0));
+    std::cout << sol.shortestSubarray(v1, 0) << std::endl;
+    print(sol.kthSmallestPrimeFraction(v2, 1));
+    print(sol.removeInvalidParentheses("()"));
+    TreeNode node(5);
+    TreeNode node2(6);
+    node.left = &node2;
+    std::cout << sol.getMinimumDifference(&node) << std::endl;
+    std::cout << sol.shortestPathLength(v3) << std::endl;
+    std::cout << sol.maxPathSum(&node) << std::endl;
+    print(sol.lexicalOrder(3));
     return 0;
 }
