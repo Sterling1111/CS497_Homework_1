@@ -212,3 +212,26 @@ The algorithm performs a dfs starting with 1. It returns if the number it is
 trying to add is greater than n or if it has added n numbers to the array. Time complexity
 is O(n) because it adds one operation per stack call and adds n numbers. Space complexity
 is O(n) for the same reason.
+
+# CS497 Homework 6
+
+## Find if Path Exists in Graph
+The algorithm uses the edges to construct a graph. Then it runs dfs on the graph starting
+from the source and if it ever finds the destination it returns true else false. The time 
+complexity is O(v + E) for dfs. Space complexity is O(V + E) for the vector of vertices and
+the stack depth for dfs edge traversals.
+
+## Longest Cycle in a Graph
+The algorithm runs through the nodes according to the connections given and stops
+when it encounters a dead end(-1) or until it reaches a node whose source node is
+the same as the source node of the given node. Then it subtracts from the total
+distance the distance it took to get there the first time. If this is larger than
+the current result then it becomes the new result. This occurs until there are no more
+nodes to process. Time complexity is O(n) for the outer loop. There is an innter loop
+which processes nodes but once processed they can be skipped in the future so O(n). Space
+complexity is O(n) for the vector which contains source node and distance from source node.
+
+## Connecting Cities with minimum Cost
+The algorithm uses Kruskals MST algorithm implemented with union find. The time complexity
+is O(m log m) for sorting the edges. Kruskals runs as (m log n) so overall time complexity is
+O(m log m + m log n). Space complexity is O(n) for the parent vector.

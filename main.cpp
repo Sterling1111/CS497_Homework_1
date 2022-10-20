@@ -34,6 +34,80 @@ struct Bucket{
 
 class Solution {
 public:
+    bool dfs(vector<pair<bool, vector<int>>>& graph, int currNode, int destination) {
+        if(currNode == destination) return true;
+
+        auto & [seen, adjacentNodes] = graph[currNode];
+
+        if(!seen) {
+            seen = true;
+            for(auto node : adjacentNodes) {
+                if (dfs(graph, node, destination)) return true;
+            }
+        }
+        return false;
+    }
+
+    bool validPath(int n, vector<vector<int>>& edges, int source, int destination) {
+        vector<pair<bool, vector<int>>> graph(n, {false, {}});
+
+        for(auto& edge : edges) {
+            int a = edge[0], b = edge[1];
+            graph[a].second.push_back(b);
+            graph[b].second.push_back(a);
+        }
+
+        return dfs(graph, source, destination);
+    }
+
+    int longestCycle(vector<int>& edges) {
+        int result{-1};
+        //{distance, source node}
+        vector<pair<int, int>> v(edges.size(), {-1, -1});
+
+        for (int i = 0; i < edges.size(); ++i) {
+            int dist{0}, j{i};
+
+            //while we have not gotten to the end of the graph
+            while(j != -1) {
+                auto & [sourceDist, sourceNode] = v[j];
+
+                if(sourceDist == -1) v[j] = {dist++, i};
+                else {
+                    if(sourceNode == i) result = std::max(result, dist - sourceDist);
+                    break;
+                }
+                j = edges[j];
+            }
+        }
+        return result;
+    }
+
+    vector<int> parent;
+
+    int findParent(int i) {
+        while(i != parent[i]) i = parent[i];
+        return i;
+    }
+
+    int minimumCost(int n, vector<vector<int>>& connections) {
+        std::sort(connections.begin(), connections.end(), [] (const auto& v1, const auto& v2) {
+            return v1[2] < v2[2];
+        });
+        parent.resize(n+1);
+        for (int i = 1; i <= n; ++i) parent[i] = i;
+        int result{0}, count{1};
+        for(const auto& elem : connections) {
+            auto parent1{findParent(elem[0])}, parent2{findParent(elem[1])};
+            if(parent1 != parent2) {
+                result += elem[2];
+                parent[parent2] = parent1;
+                count++;
+                if(count == n) return result;
+            }
+        } return -1;
+    }
+
     unordered_set<string> validExpressions;
     unsigned maxSizeAccepted{};
 
@@ -563,6 +637,9 @@ int main() {
     vector<int> v1 = {};
     vector<int> v2 = {2, 3};
     vector<vector<int>> v3 = {{}};
+    vector<int> v4 = {3, 3, 4, 2, 3};
+    vector<vector<int>> v5 = {{1, 2, 5}, {1, 3, 6}, {2, 3, 1}};
+    vector<vector<int>> v6 = {{0, 1}, {1, 2}, {2, 0}};
     print(sol.topKFrequent(v1, 0));
     print(sol.findClosestElements(v1, 0, 0));
     print(sol.peekTopK(v1, 0));
@@ -576,5 +653,8 @@ int main() {
     std::cout << sol.shortestPathLength(v3) << std::endl;
     std::cout << sol.maxPathSum(&node) << std::endl;
     print(sol.lexicalOrder(3));
+    std::cout << sol.longestCycle(v4) << std::endl;
+    std::cout << sol.minimumCost(3, v5) << std::endl;
+    std::cout << sol.validPath(3, v6, 0, 2) << std::endl;
     return 0;
 }
