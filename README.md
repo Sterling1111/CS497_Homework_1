@@ -235,3 +235,24 @@ complexity is O(n) for the vector which contains source node and distance from s
 The algorithm uses Kruskals MST algorithm implemented with union find. The time complexity
 is O(m log m) for sorting the edges. Kruskals runs as (m log n) so overall time complexity is
 O(m log m + m log n). Space complexity is O(n) for the parent vector.
+
+# CS497 Homework 7
+
+## Course Schedule
+The algorithm builds a graph where a -> b means that you must take a in order to take b.
+Once the graph is built run Kahn's algorithm to build a topological ordering of the graph.
+each time the q is popped increment the count of the courses that can be taken. If the number
+of courses that can be taken is equal to the number of courses that need to be taken then return 
+true else return false. The space complexity of Kahn's is O(V + E) and the time complexity is the same.
+
+## Network Delay Time
+The algorithm that is run is Djkstras algorithm to determine the shortest
+amount of time for each node to receive the signal. We first build the
+graph and then run the algorithm. The time complexities of Djakstras with
+this implementation are O(V + E log V). The space complexities is given as
+O(V + E).
+
+## Optimize water distribution in a village
+The algorithm constructs a new graph with an added well node. This node is connected to each other node
+with the cost of the connection as the cost of the well for that node. Then Kruskal's is run on that graph. 
+The time complexity of my implementation of Kruskals is O(V log V + E * log V). Space complexity is O(V) for the parent vector.

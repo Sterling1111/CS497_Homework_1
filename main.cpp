@@ -34,6 +34,102 @@ struct Bucket{
 
 class Solution {
 public:
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        unordered_map<int, vector<int>> m;
+        unordered_map<int, bool> seen;
+        vector<int> indegree(numCourses);
+        queue<int> q;
+        int count = 0;
+
+        for(const auto& courses : prerequisites) {
+            int a = courses[0];
+            int b = courses[1];
+            m[b].push_back(a);
+            indegree[a]++;
+        }
+
+        for(int i = 0; i < numCourses; i++) {
+            if(!indegree[i]) {
+                q.push(i);
+                seen[i] = true;
+            }
+        }
+
+        while(!q.empty()) {
+            int node = q.front();
+            q.pop();
+            count++;
+            if(m.find(node) != m.end()) {
+                for(auto elem : m[node]) {
+                    indegree[elem]--;
+                    if(!indegree[elem] && !seen[elem]) {
+                        q.push(elem);
+                        seen[elem] = true;
+                    }
+                }
+            }
+        } return count == numCourses;
+    }
+
+    int networkDelayTime(vector<vector<int>>& times, int n, int k) {
+        vector<vector<vector<int>>> graph(n+1);
+        vector<int> distance(n+1, numeric_limits<int>::max());
+        vector<bool> visited(n+1, false);
+        priority_queue<vector<int>, vector<vector<int>>, greater<>> pq;
+        for(const auto& time : times)
+            graph.at(time.at(0)).push_back({time.at(1), time.at(2)});
+
+        distance[k] = 0;
+        pq.push({0, k});
+        int u, v, w;
+
+        while(!pq.empty()) {
+            u = pq.top().at(1);
+            pq.pop();
+            if(visited[u]) continue;
+            visited[u] = true;
+            for(auto& elem : graph[u]) {
+                v = elem.at(0);
+                w = elem.at(1);
+                if(distance.at(v) > distance.at(u) + w) {
+                    distance[v] = distance[u] + w;
+                    pq.push({distance[v], v});
+                }
+            }
+        }
+        int result = *max_element(distance.begin() + 1, distance.end());
+        if(result == numeric_limits<int>::max()) return -1;
+        return result;
+    }
+
+    int minCostToSupplyWater(int n, vector<int>& wells, vector<vector<int>>& pipes) {
+        vector<vector<int>> edges (pipes.size());
+
+        for(int i = 0; i < pipes.size(); i++) edges[i] = pipes[i];
+        for(int i = 0; i < wells.size(); i++) edges.push_back({0, i+1, wells[i]});
+
+        sort(edges.begin(), edges.end(), [](const auto& v1, const auto& v2) {
+            return v1[2] < v2[2];
+        });
+
+        parent.clear();
+        parent.resize(edges.size());
+
+        for(int i = 0; i < parent.size(); i++) parent[i] = i;
+        int result{0}, count{0};
+
+        for(const auto& elem : edges) {
+            auto parent1{findParent(elem[0])}, parent2{findParent(elem[1])};
+            if(parent1 != parent2) {
+                result += elem[2];
+                parent[parent2] = parent1;
+                count++;
+                if(count == n) return result;
+            }
+        }
+        return -1;
+    }
+
     bool dfs(vector<pair<bool, vector<int>>>& graph, int currNode, int destination) {
         if(currNode == destination) return true;
 
@@ -656,5 +752,12 @@ int main() {
     std::cout << sol.longestCycle(v4) << std::endl;
     std::cout << sol.minimumCost(3, v5) << std::endl;
     std::cout << sol.validPath(3, v6, 0, 2) << std::endl;
+    vector<int> wells = {1, 2, 2};
+    vector<vector<int>> pipes = {{1, 2, 1}, {2, 3, 1}};
+    std::cout << sol.minCostToSupplyWater(3, wells, pipes) << std::endl;
+    vector<vector<int>> prereq = {{1, 0}};
+    vector<vector<int>> vae = {{2, 1, 1}, {2, 3, 1}, {3, 4, 1}};
+    std::cout << sol.networkDelayTime(vae, 4, 2) << std::endl;
+    std::cout << sol.canFinish(2, prereq) << std::endl;
     return 0;
 }
