@@ -6,6 +6,7 @@
 #include <unordered_set>
 #include <algorithm>
 #include <set>
+#include <math.h>
 
 using namespace std;
 
@@ -34,6 +35,73 @@ struct Bucket{
 
 class Solution {
 public:
+    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+        vector<int> result(0);
+        unordered_map<int, vector<int>> m;
+        unordered_map<int, bool> seen;
+        vector<int> indegree(numCourses);
+        queue<int> q;
+
+        for(const auto& courses : prerequisites) {
+            int a = courses[0];
+            int b = courses[1];
+            m[b].push_back(a);
+            indegree[a]++;
+        }
+
+        for(int i = 0; i < numCourses; i++) {
+            if(!indegree[i]) {
+                q.push(i);
+                seen[i] = true;
+            }
+        }
+
+        while(!q.empty()) {
+            int node = q.front();
+            result.push_back(node);
+            q.pop();
+            if(m.find(node) != m.end()) {
+                for(auto elem : m[node]) {
+                    indegree[elem]--;
+                    if(!indegree[elem] && !seen[elem]) {
+                        q.push(elem);
+                        seen[elem] = true;
+                    }
+                }
+            }
+        } if(result.size() == numCourses) return result;
+        return {};
+    }
+
+    int divide(int dividend, int divisor) {
+        int result{};
+        if(divisor == numeric_limits<int>::min()) return dividend == divisor;
+        if(divisor == 1) return dividend;
+        if(dividend == numeric_limits<int>::min()) {
+            if(divisor == 1) return numeric_limits<int>::min();
+            else if(divisor == -1) return numeric_limits<int>::max();
+            else {
+                dividend += abs(divisor);
+                ++result;
+            }
+        }
+        result += exp(log(abs(dividend)) - log(abs(divisor))) + .0000001;
+        return dividend > 0 == divisor > 0 ? result : -result;
+    }
+
+    int coinChange(vector<int>& coins, int amount) {
+        vector<int> dp(amount + 1, amount + 1);
+        dp[0] = 0;
+
+        for(int i = 1; i < amount + 1; i++) {
+            for(int c : coins) {
+                if(i - c >= 0)
+                    dp[i] = min(dp[i], 1 + dp[i - c]);
+            }
+        }
+        return dp[amount] == amount + 1 ? -1 : dp[amount];
+    }
+
     bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
         unordered_map<int, vector<int>> m;
         unordered_map<int, bool> seen;
@@ -729,6 +797,8 @@ void print(vector<T> v) {
 }
 
 int main() {
+    std::cout << round((exp(log(231) - log(3)))) << std::endl;
+    int num = log(5);
     Solution sol;
     vector<int> v1 = {};
     vector<int> v2 = {2, 3};

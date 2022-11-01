@@ -256,3 +256,22 @@ O(V + E).
 The algorithm constructs a new graph with an added well node. This node is connected to each other node
 with the cost of the connection as the cost of the well for that node. Then Kruskal's is run on that graph. 
 The time complexity of my implementation of Kruskals is O(V log V + E * log V). Space complexity is O(V) for the parent vector.
+
+# CS497 Homework 8
+
+## Course Schedule 2
+The algorithm builds a graph and runs Kahns algorithm to build a topological ordering of
+the graph. If the topological ordering contains all the nodes then the vector is returned. 
+Otherwise, the empty vector is returned. The time complexity for Khans is given as O(V + E). The
+space complexity is the same.
+
+## Divide Two Integers
+The algorithm relies on the fact that ln(x/y) = ln(x) - ln(y). Since we want x/y then we use
+exp to get x / y. we add a little to it because if they numbers divide evenly then it will be
+a little small for instance 3 = 2.99999, so we need to correct for that. Space complexity is O(1) and
+time complexity is O(O(exp) + O(log)).
+
+## Coin Change
+The algorithm uses bottom up dynamic programming to compute the solution. That is to say it
+computes the min for 0 then 1 then 2... up to amount. The time complexity is O(amount * coins.size()).
+The space complexity is O(amount).
