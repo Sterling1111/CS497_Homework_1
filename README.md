@@ -275,3 +275,32 @@ time complexity is O(O(exp) + O(log)).
 The algorithm uses bottom up dynamic programming to compute the solution. That is to say it
 computes the min for 0 then 1 then 2... up to amount. The time complexity is O(amount * coins.size()).
 The space complexity is O(amount).
+
+# CS497 Homework 9
+
+## Longest Valid Parenthesis
+The algorithm builds up the solution from the bottom up with dynamic programming. The idea is to keep
+a cache that is the largest subsequence of elements that ends in position i. It will be initialized to
+0 at first. If we encounter a ')' then we compute the result based off the cache. It it is '(' then it 
+could not be the end so cache will remain 0. The time complexity is O(n) and the space complexity is O(n)
+for the cache. 
+
+## Maximum Subarray
+The algorithm keeps track of the sum of the current subarray and a running sum
+which is the max of all subarrays seen so far. On each iteration of the loop it
+adds the next element to the subarray and keeps the larger of the sum and the elem.
+Then it compares that max to the running max and takes the larger. At the end it
+returns the max. The time complexity is O(n) and space is O(1).
+
+## Unique Paths
+The algorithm uses dp to build the solution. There is only 1 path
+to get to the end of the first row and end of first column. For the middle section it
+is the number of paths from above + the number of paths from the left. The time complexity
+is O(n * m) and the space complexity is O(n * m).
+
+## Unique Paths 2
+The algorithm is similar to the unique path solution. First we need to set the values for the
+first row and first column. They are all 1 until we encounter a 1 and then the rest after that will
+be 0 as they can never be reached. Then we proceed with the dp as before except if we encounter a 1
+then we set dp at the index to 0 as it can never be reached. The time complexity is O(n * m) and the
+space complexity is O(n * m).

@@ -35,6 +35,77 @@ struct Bucket{
 
 class Solution {
 public:
+    /**
+     * Homework 9
+     */
+    int longestValidParentheses(string s) {
+        if(s.size() < 2) return 0;
+
+        vector<int> dp(s.size(), 0);
+
+        dp[1] = (s[0] == '(' and s[1] == ')') ? 2 : 0;
+        int max{dp[1]};
+
+        for(int i = 2; i < s.size(); i++) {
+            if(s[i] == '(') continue;
+            if(s[i-1] == '(') dp[i] = dp[i-2] + 2;
+            else if((i - dp[i-1]-1 > -1) and s[i-dp[i-1]-1] == '(') {
+                dp[i] = dp[i-1] + 2;
+                dp[i] += (i - dp[i-1]-2 > -1) ? dp[i-dp[i-1]-2] : 0;
+            }
+            max = std::max(max, dp[i]);
+        } return max;
+    }
+
+    int maxSubArray(vector<int>& nums) {
+        int max = nums[0];
+        int curr = max;
+
+        for(int i = 1; i < nums.size(); i++) {
+            curr = std::max(nums[i], curr + nums[i]);
+            max = std::max(max, curr);
+        }
+        return max;
+    }
+
+    int uniquePaths(int m, int n) {
+        vector<vector<int>> dp(m, vector<int>(n, 1));
+
+        for(int i = 1; i < m; i++) {
+            for(int j = 1; j < n; j++) {
+                dp[i][j] = dp[i][j-1] + dp[i-1][j];
+            }
+        } return dp[m-1][n-1];
+    }
+
+    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
+        if(obstacleGrid[0][0]) return 0;
+        obstacleGrid[0][0] = 1;
+
+        int rows = obstacleGrid.size();
+        int cols = obstacleGrid[0].size();
+
+
+        for(int row = 1; row < rows; row++)
+            obstacleGrid[row][0] = (!obstacleGrid[row][0] and obstacleGrid[row-1][0]) ? 1 : 0;
+
+
+        for(int col = 1; col < cols; col++)
+            obstacleGrid[0][col] = (!obstacleGrid[0][col] and obstacleGrid[0][col-1]) ? 1 : 0;
+
+        for(int row = 1; row < rows; row++) {
+            for(int col = 1; col < cols; col++) {
+                if(obstacleGrid[row][col])
+                    obstacleGrid[row][col] = 0;
+                else
+                    obstacleGrid[row][col] = obstacleGrid[row-1][col] + obstacleGrid[row][col-1];
+            }
+        } return obstacleGrid[rows-1][cols-1];
+    }
+
+    /**
+     * Homework 8
+     */
     vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
         vector<int> result(0);
         unordered_map<int, vector<int>> m;
@@ -102,6 +173,9 @@ public:
         return dp[amount] == amount + 1 ? -1 : dp[amount];
     }
 
+    /**
+     * Homework 7
+     */
     bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
         unordered_map<int, vector<int>> m;
         unordered_map<int, bool> seen;
@@ -198,6 +272,9 @@ public:
         return -1;
     }
 
+    /**
+     *
+     */
     bool dfs(vector<pair<bool, vector<int>>>& graph, int currNode, int destination) {
         if(currNode == destination) return true;
 
